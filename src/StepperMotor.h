@@ -85,6 +85,10 @@ class StepperMotor: public FOCMotor
     */
     void setPhaseVoltage(float Uq, float Ud, float angle_el) override;
 
+    // CORDIC
+
+    void setPhaseVoltageCORDIC(float Uq, float Ud, float angle_el) override;
+
   private:
   
     /** Sensor alignment to electrical 0 angle of the motor */
