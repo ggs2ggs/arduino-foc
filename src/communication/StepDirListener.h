@@ -48,16 +48,33 @@ class StepDirListener
      * - no need to call getValue function
      */
     void attach(float* variable);
-
+    void attach(float* pos_var, float* vel_var);
+    /**
+     * Get the calulated velocity value by 
+     * finite differencing the time between step pulses
+     * - no need to call this function outside of IRQ
+     **/
+    float getVelocityValue();
+    /**
+     * Deal with zero velocity by setting velocity to zero 
+     * if it's been a long time since the last pulse.
+     * call this in the main loop somewhat often
+     **/
+    void update();
     // variables
     int pin_step; //!< step pin
     int pin_dir; //!< direction pin
     long count; //!< current counter value - should be set to 0 for homing
+    float counter_to_value; //!< step counter to value 
     PinStatus polarity = RISING; //!< polarity of the step pin
 
   private:
-    float* attached_variable = nullptr; //!< pointer to the attached variable 
-    float counter_to_value; //!< step counter to value 
+    volatile float* attached_position = nullptr; //!< pointer to the attached variable 
+    volatile float* attached_velocity = nullptr; //!< pointer to the attached variable 
+    volatile int prev_pulse_time;
+    volatile int current_pulse_time;
+    volatile int elapsed_time;
+    volatile bool dir_state;
     //bool step_active = 0; //!< current step pin status (HIGH/LOW) - debouncing variable
 
 };
